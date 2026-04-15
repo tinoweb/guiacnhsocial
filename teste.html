@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Placa</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 24px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            background-color: #4a90e2;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #357abd;
+        }
+
+        ::placeholder {
+            color: #999;
+        }
+
+        @media (max-width: 480px) {
+            input {
+                font-size: 20px;
+            }
+
+            button {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <input
+            type="text"
+            id="placa"
+            placeholder="Digite a placa (ABC1B23 ou ABC1234)"
+            inputmode="text"
+            autocapitalize="characters"
+        >
+
+        <button onclick="consultarPlaca()">Consultar</button>
+    </div>
+
+    <script>
+        function consultarPlaca() {
+            const placaInput = document.getElementById('placa').value.toUpperCase();
+            const placaLimpa = placaInput.replace(/[- ]/g, '');
+
+            const regexMercosul = /^[A-Z]{3}\d[A-Z]\d{2}$/;
+            const regexAntiga = /^[A-Z]{3}\d{4}$/;
+
+            let url = '';
+
+            if (regexMercosul.test(placaLimpa)) {
+                url = `http://fiscaldasestradas.sp.gov.br/sisf-ws/rest/sigatc/consulta/${placaLimpa}`;
+
+            } else if (regexAntiga.test(placaLimpa)) {
+                const parteInicial = placaLimpa.slice(0, 3);
+                const parteFinal = placaLimpa.slice(3);
+                url = `http://fiscaldasestradas.sp.gov.br/sisf-ws/rest/sigatc/consulta/${parteInicial}-${parteFinal}`;
+
+            } else {
+                alert('Placa inválida! Verifique o formato.');
+                return;
+            }
+
+            // Abre SOMENTE em nova aba (a página atual permanece intacta)
+            window.open(url, '_blank');
+        }
+    </script>
+
+</body>
+</html>

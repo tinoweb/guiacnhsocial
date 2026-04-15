@@ -1,0 +1,179 @@
+/* Main Content Styles */
+.main-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.article-category {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: rgb(19, 81, 180);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.article-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: rgb(12, 50, 111);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.article-intro {
+    font-size: 1.125rem;
+    color: rgb(85, 85, 85);
+    margin-bottom: 1rem;
+}
+
+.article-date {
+    font-size: 0.875rem;
+    color: rgb(153, 153, 153);
+    margin-bottom: 1.5rem;
+}
+
+.main-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+/* Social Share */
+.social-share {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.share-label {
+    font-size: 0.875rem;
+    color: rgb(85, 85, 85);
+}
+
+.share-icon {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    fill: rgb(19, 81, 180);
+    transition: opacity 0.2s;
+}
+
+.share-icon:hover {
+    opacity: 0.8;
+}
+
+/* Article Text */
+.article-text {
+    font-size: 1rem;
+    line-height: 1.625;
+    color: rgb(85, 85, 85);
+    margin-bottom: 1.5rem;
+}
+
+.drop-cap {
+    float: left;
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+    color: rgb(19, 81, 180);
+    margin-right: 0.5rem;
+}
+
+/* Inscrição Button */
+.inscricao-container {
+    margin: 2rem 0;
+}
+
+.btn-inscricao {
+    background-color: rgb(19, 81, 180);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-inscricao:hover {
+    background-color: rgb(13, 60, 140);
+    transform: scale(1.05);
+}
+
+.inscricao-subtitle {
+    font-size: 0.875rem;
+    color: rgb(153, 153, 153);
+    margin-top: 0.5rem;
+}
+
+/* Sections */
+.article-section {
+    margin-top: 2rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: rgb(12, 50, 111);
+    margin-bottom: 1rem;
+}
+
+/* Lists */
+.bullet-list {
+    list-style: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.bullet-item {
+    margin-bottom: 0.75rem;
+    color: rgb(85, 85, 85);
+    line-height: 1.625;
+    font-size: 1rem;
+}
+
+.bullet-item strong {
+    color: rgb(51, 51, 51);
+}
+
+.numbered-list {
+    list-style: decimal;
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.numbered-item {
+    margin-bottom: 0.75rem;
+    color: rgb(85, 85, 85);
+    line-height: 1.625;
+    font-size: 1rem;
+}
+
+/* Caixa de destaque */
+.highlight-box {
+    background-color: rgb(231 231 239);
+    border-radius: 6px;
+    max-width: 95%;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.highlight-box-title {
+    font-weight: 600;
+    color: rgb(12, 50, 111);
+    margin-bottom: 0.5rem;
+}
+
+.highlight-box-text {
+    font-size: 0.875rem;
+    color: rgb(85, 85, 85);
+    line-height: 1.5;
+}

@@ -1,0 +1,40 @@
+/* Responsive */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .article-title {
+        font-size: 1.25rem;
+    }
+
+    .footer-brand {
+        text-align: center;
+    }
+
+    .footer-social {
+        text-align: center;
+    }
+
+    /* Footer sections permanecem visíveis no mobile */
+
+    /* Login Screen Mobile */
+    .login-container {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .login-aside {
+        display: none;
+    }
+
+    .login-main {
+        max-width: 100%;
+    }
+}

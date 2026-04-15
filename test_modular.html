@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Estrutura Modular CNH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/login.css">
+    <style>
+        /* Animações personalizadas */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Estilos adicionais para compatibilidade */
+        .error-alert {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- Conteúdo será injetado aqui -->
+    </div>
+
+    <!-- Scripts modulares -->
+    <script type="module" src="js/StateManager.js"></script>
+    <script type="module" src="js/ScreenManager.js"></script>
+    <script type="module" src="js/ChatManager.js"></script>
+    <script type="module" src="js/loginBuilder_new.js"></script>
+    <script type="module" src="js/index.js"></script>
+    
+    <!-- Script de inicialização -->
+    <script type="module">
+        import { LoginBuilder } from './js/index.js';
+        
+        // Inicializar aplicação
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Iniciando aplicação modular...');
+            
+            try {
+                const app = new LoginBuilder();
+                app.build();
+                console.log('Aplicação iniciada com sucesso!');
+                
+                // Adicionar debug tools no console
+                window.app = app;
+                console.log('Debug: Acesse "window.app" para interagir com a aplicação');
+                
+            } catch (error) {
+                console.error('Erro ao iniciar aplicação:', error);
+                
+                // Mostrar erro na tela
+                document.getElementById('app').innerHTML = `
+                    <div class="min-h-screen flex items-center justify-center bg-red-50">
+                        <div class="bg-white p-8 rounded-lg shadow-lg max-w-md">
+                            <h1 class="text-2xl font-bold text-red-600 mb-4">Erro na Inicialização</h1>
+                            <p class="text-gray-700 mb-4">Ocorreu um erro ao carregar a aplicação modular:</p>
+                            <pre class="bg-gray-100 p-4 rounded text-sm overflow-auto">${error.message}</pre>
+                            <button onclick="location.reload()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                                Recarregar Página
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+        
+        // Debug functions
+        window.debugModular = {
+            showState: () => {
+                if (window.app) {
+                    console.log('Estado atual:', window.app.getCurrentState());
+                    return window.app.getCurrentState();
+                }
+                return 'App não inicializado';
+            },
+            
+            navigateTo: (screen) => {
+                if (window.app) {
+                    console.log(`Navegando para: ${screen}`);
+                    window.app.navigateToScreen(screen);
+                } else {
+                    console.error('App não inicializado');
+                }
+            },
+            
+            clearState: () => {
+                if (window.app) {
+                    console.log('Limpando estado...');
+                    window.app.clearState();
+                } else {
+                    console.error('App não inicializado');
+                }
+            },
+            
+            exportState: () => {
+                if (window.app) {
+                    const state = window.app.exportState();
+                    console.log('Estado exportado:', state);
+                    return state;
+                }
+                return 'App não inicializado';
+            },
+            
+            testChat: (detran = 'Detran São Paulo', vacancies = 50) => {
+                if (window.app) {
+                    console.log(`Iniciando chat com ${detran}`);
+                    window.app.showChatScreen(detran, vacancies);
+                } else {
+                    console.error('App não inicializado');
+                }
+            }
+        };
+        
+        console.log('Debug tools disponíveis:');
+        console.log('- window.debugModular.showState()');
+        console.log('- window.debugModular.navigateTo(screen)');
+        console.log('- window.debugModular.clearState()');
+        console.log('- window.debugModular.exportState()');
+        console.log('- window.debugModular.testChat()');
+    </script>
+</body>
+</html>
