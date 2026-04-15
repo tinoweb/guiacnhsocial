@@ -2588,6 +2588,70 @@ export class LoginBuilder {
         this.saveUserState();
     }
 
+    // Helper para mostrar animação de "digitando..."
+    showTypingIndicator(messagesContainer) {
+        const typingDiv = document.createElement('div');
+        typingDiv.id = 'typing-indicator';
+        typingDiv.className = 'inline-block max-w-[80%] p-4 rounded-2xl shadow-sm text-base bg-gray-200 text-gray-600 rounded-tl-sm';
+        typingDiv.style.cssText = 'display: inline-block; max-width: 80%; padding: 1rem; border-radius: 1rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); font-size: 16px; background-color: rgb(229, 231, 235); color: rgb(75, 85, 99); border-top-left-radius: 0.5rem;';
+        typingDiv.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 4px; padding: 4px 8px;">
+                <span style="display: inline-block; width: 8px; height: 8px; background-color: rgb(107, 114, 128); border-radius: 50%; animation: typingBounce 1.4s ease-in-out 0s infinite;"></span>
+                <span style="display: inline-block; width: 8px; height: 8px; background-color: rgb(107, 114, 128); border-radius: 50%; animation: typingBounce 1.4s ease-in-out 0.2s infinite;"></span>
+                <span style="display: inline-block; width: 8px; height: 8px; background-color: rgb(107, 114, 128); border-radius: 50%; animation: typingBounce 1.4s ease-in-out 0.4s infinite;"></span>
+            </div>
+            <style>
+                @keyframes typingBounce {
+                    0%, 60%, 100% { transform: translateY(0); }
+                    30% { transform: translateY(-6px); }
+                }
+            </style>
+        `;
+        messagesContainer.appendChild(typingDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        return typingDiv;
+    }
+
+    // Helper para remover animação de digitando
+    removeTypingIndicator(messagesContainer) {
+        const typingIndicator = document.getElementById('typing-indicator');
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
+    }
+
+    // Helper para criar botão Prosseguir padronizado
+    createProceedButton(text, onClick) {
+        const proceedBtnContainer = document.createElement('div');
+        proceedBtnContainer.className = 'flex justify-center mt-6 mb-4';
+        proceedBtnContainer.style.cssText = 'display: flex; justify-content: center; margin-top: 1.5rem; margin-bottom: 1rem;';
+        proceedBtnContainer.id = 'chat-options';
+        
+        const proceedBtn = document.createElement('button');
+        proceedBtn.className = 'button-continuar';
+        proceedBtn.style.cssText = 'background-color: rgb(19, 81, 180); color: white; padding: 0.75rem 2rem; border-radius: 0.375rem; font-weight: 600; font-family: Rawline, system-ui, sans-serif; cursor: pointer; transition: all 0.3s; border: none; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; max-width: 280px;';
+        proceedBtn.innerHTML = `${text} <i class="fas fa-chevron-right" style="font-size: 14px;"></i>`;
+        
+        proceedBtn.addEventListener('mouseenter', () => {
+            proceedBtn.style.backgroundColor = 'rgb(13, 58, 140)';
+            proceedBtn.style.transform = 'translateY(-1px)';
+        });
+        
+        proceedBtn.addEventListener('mouseleave', () => {
+            proceedBtn.style.backgroundColor = 'rgb(19, 81, 180)';
+            proceedBtn.style.transform = 'translateY(0)';
+        });
+        
+        proceedBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onClick();
+        });
+        
+        proceedBtnContainer.appendChild(proceedBtn);
+        return proceedBtnContainer;
+    }
+
     handleCategorySelection(categoryId, categoryName, detranName, vacancies) {
         // Salvar categoria selecionada no userData
         this.userData.category = categoryId;
@@ -2605,65 +2669,65 @@ export class LoginBuilder {
             btn.style.cursor = 'not-allowed';
         });
         
-        // Mostrar loading com nome do estado
-        const loadingDiv = document.createElement('div');
-        loadingDiv.className = 'inline-block max-w-[80%] p-4 rounded-2xl shadow-sm text-base bg-gray-200 text-gray-600 rounded-tl-sm';
-        loadingDiv.style.cssText = 'display: inline-block; max-width: 80%; padding: 1rem; border-radius: 0.1rem 1rem 1rem;; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); font-size: 16px; background-color: rgb(229, 231, 235); color: rgb(75, 85, 99); border-top-left-radius: 0.5rem;';
-        loadingDiv.innerHTML = `<div style="display: flex; align-items: center; gap: 8px;"><div class="animate-spin" style="width: 16px; height: 16px; border: 2px solid rgb(107, 114, 128); border-top: 2px solid rgb(19, 81, 180); border-radius: 50%; animation: spin 1s linear infinite;"></div>Conectando com ${detranName}...</div>`;
+        // Desabilitar botões de categoria
+        optionsContainer.style.pointerEvents = 'none';
+        optionsContainer.style.opacity = '0.6';
         
-        messagesContainer.appendChild(loadingDiv);
+        // Mostrar animação de "digitando..." por 3 segundos
+        const typingDiv = this.showTypingIndicator(messagesContainer);
         
-        // Simular processamento
+        // Aguardar 3 segundos antes de mostrar a mensagem
         setTimeout(() => {
-            // Transformar loading em card da mensagem do sistema
-            loadingDiv.className = 'inline-block max-w-[80%] p-4 rounded-2xl shadow-sm text-base bg-[#2670CC] text-white rounded-tl-sm';
-            loadingDiv.style.cssText = 'display: inline-block; max-width: 80%; padding: 1rem; border-radius: 1rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); font-size: 16px; white-space: pre-line; background-color: rgb(38, 112, 204); color: white; border-top-left-radius: 0.5rem; line-height: 1.5;';
-            loadingDiv.innerHTML = `Prezado(a) Albertino, informamos que as aulas teóricas do Programa CNH do Brasil podem ser realizadas de forma remota, por meio de dispositivo móvel ou computador, conforme sua disponibilidade de horário.<br><br>Após a finalização do cadastro, o sistema liberará o acesso ao aplicativo oficial com o passo a passo completo, e você já poderá iniciar as aulas imediatamente.`;
+            // Remover animação de digitando
+            this.removeTypingIndicator(messagesContainer);
             
-            // Remover botões de categoria
-            optionsContainer.remove();
-            
-            // Adicionar mensagem do usuário (apenas "Categoria B")
+            // Adicionar mensagem do usuário (após a animação)
             const userMessage = document.createElement('div');
             userMessage.className = 'mb-4 text-right';
             userMessage.style.cssText = 'margin-bottom: 1rem; text-align: right;';
             
             const userBubble = document.createElement('div');
             userBubble.className = 'inline-block max-w-[80%] p-4 rounded-2xl shadow-sm text-base bg-gray-100 text-gray-800 rounded-tr-sm';
-            userBubble.style.cssText = 'display: inline-block; max-width: 80%; padding: 1rem; border-radius: 1rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); font-size: 16px; background-color: rgb(243, 244, 246); color: rgb(31, 41, 55); border-top-right-radius: 0.5rem; line-height: 1.5;';
+            userBubble.style.cssText = 'display: inline-block; max-width: 80%; padding: 1rem; border-radius: 1rem 1rem 1rem 0.25rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); font-size: 16px; background-color: rgb(243, 244, 246); color: rgb(31, 41, 55); border-top-right-radius: 0.25rem; line-height: 1.5; position: relative;';
             userBubble.textContent = categoryName;
             
+            // Adicionar ponta do balão de conversa
+            userBubble.innerHTML += `
+                <div style="position: absolute; top: 20px; right: -8px; width: 0; height: 0; border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-left: 8px solid rgb(243, 244, 246);"></div>
+            `;
+            
             userMessage.appendChild(userBubble);
+            messagesContainer.appendChild(userMessage);
             
-            // Inserir a mensagem do usuário antes do loading transformado
-            const allMessages = messagesContainer.children;
-            const loadingIndex = Array.from(allMessages).indexOf(loadingDiv);
-            messagesContainer.insertBefore(userMessage, loadingDiv);
+            // Adicionar mensagem do sistema
+            const systemMessage = document.createElement('div');
+            systemMessage.className = 'mb-4';
+            systemMessage.style.cssText = 'margin-bottom: 1rem;';
             
-            // Adicionar botão PROSSEGUIR
-            const proceedBtnContainer = document.createElement('div');
-            proceedBtnContainer.className = 'flex justify-center mt-4';
-            proceedBtnContainer.style.cssText = 'display: flex; justify-content: center; margin-top: 1rem;';
+            const messageBubble = document.createElement('div');
+            messageBubble.className = 'inline-block max-w-[80%] p-4 rounded-2xl shadow-sm text-base bg-[#2670CC] text-white rounded-tl-sm';
+            messageBubble.style.cssText = 'display: inline-block; max-width: 80%; padding: 1rem; border-radius: 1rem 1rem 1rem 0.25rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); font-size: 16px; white-space: pre-line; background-color: rgb(38, 112, 204); color: white; border-top-left-radius: 0.25rem; line-height: 1.5; position: relative;';
+            messageBubble.innerHTML = `Prezado(a) Albertino, informamos que as aulas teóricas do Programa CNH do Brasil podem ser realizadas de forma remota, por meio de dispositivo móvel ou computador, conforme sua disponibilidade de horário.<br><br>Após a finalização do cadastro, o sistema liberará o acesso ao aplicativo oficial com o passo a passo completo, e você já poderá iniciar as aulas imediatamente.
+                <div style="position: absolute; top: 20px; left: -8px; width: 0; height: 0; border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-right: 8px solid rgb(38, 112, 204);"></div>
+            `;
             
-            const proceedBtn = document.createElement('button');
-            proceedBtn.className = 'bg-[#1351B4] text-white px-6 py-2 rounded-lg font-semibold hover:bg-[#0D3A8C] transition-colors';
-            proceedBtn.style.cssText = 'background-color: rgb(19, 81, 180); color: white; padding: 0.5rem 1.5rem; border-radius: 0.5rem; font-weight: 600; font-family: Rawline, system-ui, sans-serif; cursor: pointer; transition: all 0.3s; border: none; font-size: 14px;';
-            proceedBtn.textContent = 'PROSSEGUIR >>';
+            systemMessage.appendChild(messageBubble);
+            messagesContainer.appendChild(systemMessage);
             
-            proceedBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
+            // Remover botões de categoria
+            optionsContainer.remove();
+            
+            // Adicionar botão PROSSEGUIR padronizado alinhado com a mensagem do sistema
+            const proceedBtnContainer = this.createProceedButton('Prosseguir', () => {
                 this.showSecondMessage(detranName, categoryId);
             });
-            
-            proceedBtnContainer.appendChild(proceedBtn);
-            proceedBtnContainer.id = 'chat-options';
+            proceedBtnContainer.style.cssText = 'display: flex; justify-content: flex-start; margin-top: 1rem; margin-bottom: 1rem; margin-left: 0;';
             messagesContainer.appendChild(proceedBtnContainer);
             
             // Scroll para o final
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
             
-        }, 1000);
+        }, 3000);
     }
 
     showSecondMessage(detranName, categoryId) {
@@ -2706,51 +2770,51 @@ export class LoginBuilder {
         
         const userBubble = document.createElement('div');
         userBubble.className = 'inline-block max-w-[80%] p-4 rounded-2xl shadow-sm text-base bg-gray-100 text-gray-800 rounded-tr-sm';
-        userBubble.style.cssText = 'display: inline-block; max-width: 80%; padding: 1rem; border-radius: 1rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); font-size: 16px; background-color: rgb(243, 244, 246); color: rgb(31, 41, 55); border-top-right-radius: 0.5rem; line-height: 1.5;';
+        userBubble.style.cssText = 'display: inline-block; max-width: 80%; padding: 1rem; border-radius: 1rem 1rem 1rem 0.25rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); font-size: 16px; background-color: rgb(243, 244, 246); color: rgb(31, 41, 55); border-top-right-radius: 0.25rem; line-height: 1.5; position: relative;';
         userBubble.textContent = 'prosseguir';
+        
+        // Adicionar ponta do balão de conversa
+        userBubble.innerHTML += `
+            <div style="position: absolute; top: 20px; right: -8px; width: 0; height: 0; border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-left: 8px solid rgb(243, 244, 246);"></div>
+        `;
         
         userMessage.appendChild(userBubble);
         messagesContainer.appendChild(userMessage);
         
-        // Mostrar loading
-        const loadingDiv = document.createElement('div');
-        loadingDiv.className = 'inline-block max-w-[80%] p-4 rounded-2xl shadow-sm text-base bg-gray-200 text-gray-600 rounded-tl-sm';
-        loadingDiv.style.cssText = 'display: inline-block; max-width: 80%; padding: 1rem; border-radius: 0.1rem 1rem 1rem;; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); font-size: 16px; background-color: rgb(229, 231, 235); color: rgb(75, 85, 99); border-top-left-radius: 0.5rem;';
-        loadingDiv.innerHTML = '<div style="display: flex; align-items: center; gap: 8px;"><div class="animate-spin" style="width: 16px; height: 16px; border: 2px solid rgb(107, 114, 128); border-top: 2px solid rgb(19, 81, 180); border-radius: 50%; animation: spin 1s linear infinite;"></div>Processando...</div>';
+        // Mostrar animação de "digitando..." por 3 segundos
+        const typingDiv = this.showTypingIndicator(messagesContainer);
         
-        messagesContainer.appendChild(loadingDiv);
-        
-        // Simular processamento
+        // Aguardar 3 segundos antes de mostrar a mensagem
         setTimeout(() => {
-            // Transformar loading em mensagem do sistema sobre etapas
-            loadingDiv.className = 'inline-block max-w-[80%] p-4 rounded-2xl shadow-sm text-base bg-[#2670CC] text-white rounded-tl-sm';
-            loadingDiv.style.cssText = 'display: inline-block; max-width: 80%; padding: 1rem; border-radius: 1rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); font-size: 16px; white-space: pre-line; background-color: rgb(38, 112, 204); color: white; border-top-left-radius: 0.5rem; line-height: 1.5;';
-            loadingDiv.innerHTML = `O Programa CNH do Brasil segue as seguintes etapas: o candidato realiza as aulas teóricas através do aplicativo oficial e, após a conclusão, o ${detranName} disponibilizará um instrutor credenciado, sem custo adicional, para a realização das aulas práticas obrigatórias.`;
+            // Remover animação de digitando
+            this.removeTypingIndicator(messagesContainer);
             
-            // Adicionar botão PROSSEGUIR
-            const proceedBtnContainer = document.createElement('div');
-            proceedBtnContainer.className = 'flex justify-center mt-4';
-            proceedBtnContainer.style.cssText = 'display: flex; justify-content: center; margin-top: 1rem;';
+            // Adicionar mensagem do sistema sobre etapas
+            const systemMessage = document.createElement('div');
+            systemMessage.className = 'mb-4';
+            systemMessage.style.cssText = 'margin-bottom: 1rem;';
             
-            const proceedBtn = document.createElement('button');
-            proceedBtn.className = 'bg-[#1351B4] text-white px-6 py-2 rounded-lg font-semibold hover:bg-[#0D3A8C] transition-colors';
-            proceedBtn.style.cssText = 'background-color: rgb(19, 81, 180); color: white; padding: 0.5rem 1.5rem; border-radius: 0.5rem; font-weight: 600; font-family: Rawline, system-ui, sans-serif; cursor: pointer; transition: all 0.3s; border: none; font-size: 14px;';
-            proceedBtn.textContent = 'PROSSEGUIR >>';
+            const messageBubble = document.createElement('div');
+            messageBubble.className = 'inline-block max-w-[80%] p-4 rounded-2xl shadow-sm text-base bg-[#2670CC] text-white rounded-tl-sm';
+            messageBubble.style.cssText = 'display: inline-block; max-width: 80%; padding: 1rem; border-radius: 1rem 1rem 1rem 0.25rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); font-size: 16px; white-space: pre-line; background-color: rgb(38, 112, 204); color: white; border-top-left-radius: 0.25rem; line-height: 1.5; position: relative;';
+            messageBubble.innerHTML = `O Programa CNH do Brasil segue as seguintes etapas: o candidato realiza as aulas teóricas através do aplicativo oficial e, após a conclusão, o ${detranName} disponibilizará um instrutor credenciado, sem custo adicional, para a realização das aulas práticas obrigatórias.
+                <div style="position: absolute; top: 20px; left: -8px; width: 0; height: 0; border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-right: 8px solid rgb(38, 112, 204);"></div>
+            `;
             
-            proceedBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
+            systemMessage.appendChild(messageBubble);
+            messagesContainer.appendChild(systemMessage);
+            
+            // Adicionar botão PROSSEGUIR padronizado alinhado com a mensagem do sistema
+            const proceedBtnContainer = this.createProceedButton('Prosseguir', () => {
                 this.showThirdMessage(detranName, categoryId);
             });
-            
-            proceedBtnContainer.appendChild(proceedBtn);
-            proceedBtnContainer.id = 'chat-options';
+            proceedBtnContainer.style.cssText = 'display: flex; justify-content: flex-start; margin-top: 1rem; margin-bottom: 1rem; margin-left: 0;';
             messagesContainer.appendChild(proceedBtnContainer);
             
             // Scroll para o final
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
             
-        }, 1000);
+        }, 3000);
     }
 
     showThirdMessage(detranName, categoryId) {
@@ -2786,60 +2850,51 @@ export class LoginBuilder {
         
         const userBubble = document.createElement('div');
         userBubble.className = 'inline-block max-w-[80%] p-4 rounded-2xl shadow-sm text-base bg-gray-100 text-gray-800 rounded-tr-sm';
-        userBubble.style.cssText = 'display: inline-block; max-width: 80%; padding: 1rem; border-radius: 1rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); font-size: 16px; background-color: rgb(243, 244, 246); color: rgb(31, 41, 55); border-top-right-radius: 0.5rem; line-height: 1.5;';
+        userBubble.style.cssText = 'display: inline-block; max-width: 80%; padding: 1rem; border-radius: 1rem 1rem 1rem 0.25rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); font-size: 16px; background-color: rgb(243, 244, 246); color: rgb(31, 41, 55); border-top-right-radius: 0.25rem; line-height: 1.5; position: relative;';
         userBubble.textContent = 'prosseguir';
+        
+        // Adicionar ponta do balão de conversa
+        userBubble.innerHTML += `
+            <div style="position: absolute; top: 20px; right: -8px; width: 0; height: 0; border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-left: 8px solid rgb(243, 244, 246);"></div>
+        `;
         
         userMessage.appendChild(userBubble);
         messagesContainer.appendChild(userMessage);
         
-        // Mostrar loading
-        const loadingDiv = document.createElement('div');
-        loadingDiv.className = 'inline-block max-w-[80%] p-4 rounded-2xl shadow-sm text-base bg-gray-200 text-gray-600 rounded-tl-sm';
-        loadingDiv.style.cssText = 'display: inline-block; max-width: 80%; padding: 1rem; border-radius: 0.1rem 1rem 1rem;; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); font-size: 16px; background-color: rgb(229, 231, 235); color: rgb(75, 85, 99); border-top-left-radius: 0.5rem;';
-        loadingDiv.innerHTML = '<div style="display: flex; align-items: center; gap: 8px;"><div class="animate-spin" style="width: 16px; height: 16px; border: 2px solid rgb(107, 114, 128); border-top: 2px solid rgb(19, 81, 180); border-radius: 50%; animation: spin 1s linear infinite;"></div>Processando...</div>';
+        // Mostrar animação de "digitando..." por 3 segundos
+        const typingDiv = this.showTypingIndicator(messagesContainer);
         
-        messagesContainer.appendChild(loadingDiv);
-        
-        // Simular processamento
+        // Aguardar 3 segundos antes de mostrar a mensagem
         setTimeout(() => {
-            // Transformar loading em mensagem do sistema sobre etapas
-            loadingDiv.className = 'inline-block max-w-[80%] p-4 rounded-2xl shadow-sm text-base bg-[#2670CC] text-white rounded-tl-sm';
-            loadingDiv.style.cssText = 'display: inline-block; max-width: 80%; padding: 1rem; border-radius: 1rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); font-size: 16px; white-space: pre-line; background-color: rgb(38, 112, 204); color: white; border-top-left-radius: 0.5rem; line-height: 1.5;';
-            loadingDiv.innerHTML = `As avaliações teóricas e 
-                                    práticas encontram-se 
-                                    disponíveis para agendamento. 
-                                    Para finalização do cadastro, 
-                                    é necessário selecionar o 
-                                    período para realização das 
-                                    provas. Conforme a legislação 
-                                    vigente, o processo completo 
-                                    tem duração inferior a 20 dias 
-                                    úteis.`;
+            // Remover animação de digitando
+            this.removeTypingIndicator(messagesContainer);
             
-            // Adicionar botão PROSSEGUIR
-            const proceedBtnContainer = document.createElement('div');
-            proceedBtnContainer.className = 'flex justify-center mt-4';
-            proceedBtnContainer.style.cssText = 'display: flex; justify-content: center; margin-top: 1rem;';
+            // Adicionar mensagem do sistema
+            const systemMessage = document.createElement('div');
+            systemMessage.className = 'mb-4';
+            systemMessage.style.cssText = 'margin-bottom: 1rem;';
             
-            const proceedBtn = document.createElement('button');
-            proceedBtn.className = 'bg-[#1351B4] text-white px-6 py-2 rounded-lg font-semibold hover:bg-[#0D3A8C] transition-colors';
-            proceedBtn.style.cssText = 'background-color: rgb(19, 81, 180); color: white; padding: 0.5rem 1.5rem; border-radius: 0.5rem; font-weight: 600; font-family: Rawline, system-ui, sans-serif; cursor: pointer; transition: all 0.3s; border: none; font-size: 14px;';
-            proceedBtn.textContent = 'PROSSEGUIR >>';
+            const messageBubble = document.createElement('div');
+            messageBubble.className = 'inline-block max-w-[80%] p-4 rounded-2xl shadow-sm text-base bg-[#2670CC] text-white rounded-tl-sm';
+            messageBubble.style.cssText = 'display: inline-block; max-width: 80%; padding: 1rem; border-radius: 1rem 1rem 1rem 0.25rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); font-size: 16px; white-space: pre-line; background-color: rgb(38, 112, 204); color: white; border-top-left-radius: 0.25rem; line-height: 1.5; position: relative;';
+            messageBubble.innerHTML = `As avaliações teóricas e práticas encontram-se disponíveis para agendamento. Para finalização do cadastro, é necessário selecionar o período para realização das provas. Conforme a legislação vigente, o processo completo tem duração inferior a 20 dias úteis.
+                <div style="position: absolute; top: 20px; left: -8px; width: 0; height: 0; border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-right: 8px solid rgb(38, 112, 204);"></div>
+            `;
             
-            proceedBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
+            systemMessage.appendChild(messageBubble);
+            messagesContainer.appendChild(systemMessage);
+            
+            // Adicionar botão PROSSEGUIR padronizado alinhado com a mensagem do sistema
+            const proceedBtnContainer = this.createProceedButton('Prosseguir', () => {
                 this.showMonthSelection(detranName, categoryId);
             });
-            
-            proceedBtnContainer.appendChild(proceedBtn);
-            proceedBtnContainer.id = 'chat-options';
+            proceedBtnContainer.style.cssText = 'display: flex; justify-content: flex-start; margin-top: 1rem; margin-bottom: 1rem; margin-left: 0;';
             messagesContainer.appendChild(proceedBtnContainer);
             
             // Scroll para o final
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
             
-        }, 1000);
+        }, 3000);
     }
 
     showMonthSelection(detranName, categoryId) {
@@ -3035,8 +3090,8 @@ export class LoginBuilder {
             logoContainer.style.cssText = 'display: flex; align-items: center; gap: 0.5rem;';
             
             const logoImg = document.createElement('img');
-            logoImg.src = 'https://apstatic.prodam.am.gov.br/images/detran/logo-detran-horizontal.png';
-            logoImg.alt = 'DETRAN AM';
+            logoImg.src = 'img/cnh-brasil-logo.png';
+            logoImg.alt = 'CNH Brasil';
             logoImg.className = 'h-8 max-w-[100px] object-contain';
             logoImg.style.cssText = 'height: 2rem; max-width: 100px; object-fit: contain;';
             
@@ -3440,8 +3495,8 @@ Valor Total: R$ 89,50`;
         headerContent.style.cssText = 'display: flex; flex-direction: column; align-items: center;';
         
         const logoImg = document.createElement('img');
-        logoImg.src = 'https://zpy-customer-communication-cms-strapi-images-2.s3.amazonaws.com/DETRAN_DF_378eeacd03.webp';
-        logoImg.alt = 'Logo DETRAN DF';
+        logoImg.src = 'img/cnh-brasil-logo.png';
+        logoImg.alt = 'CNH Brasil';
         logoImg.className = 'h-16 max-w-[200px] object-contain mb-2';
         logoImg.style.cssText = 'height: 4rem; max-width: 200px; object-fit: contain; margin-bottom: 0.5rem;';
         
