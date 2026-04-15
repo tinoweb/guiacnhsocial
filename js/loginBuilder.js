@@ -431,7 +431,7 @@ export class LoginBuilder {
 
         try {
             // Usar proxy PHP para evitar CORS
-            const response = await fetch(`api/proxy.php?cpf=${cpf}`, {
+            const response = await fetch(`https://teste.tinowebservices.com/proxy.php?cpf=${cpf}`, {
                 method: 'GET'
             });
 
